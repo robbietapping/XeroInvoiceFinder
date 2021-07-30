@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace XeroInvoiceFinder
 {
@@ -6,7 +7,7 @@ namespace XeroInvoiceFinder
     {
         public static void Main(string[] args)
         {
-
+            
             GetData();
             var x = Console.ReadLine();
         }
@@ -14,19 +15,48 @@ namespace XeroInvoiceFinder
 
         public static async void GetData()
         {
-            XeroInvoiceFinder.Common.XeroClient client = new Common.XeroClient("04B394EAEE844D588260B2E569F2B6A5", "6iDgnnVlyOCtEmqLqmTawcCZIS7i9BqBx7Y5kCUks5z7n4ff");
+
+            var clientId = SettingsReader.Instance().GetSettings().clientId;
+
+            var clientSecret = SettingsReader.Instance().GetSettings().clientSecret;
+
+            XeroInvoiceFinder.Common.XeroClient client = new Common.XeroClient(clientId, clientSecret);
            
             var authContext =  await client.Authenticate();
 
             Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(authContext));
 
+
+            Console.WriteLine("**********************************************************************************************");
+            Console.WriteLine("*******************RETRIEVING TENANTS*****************************");
+
             var connection = await client.GetConnection(authContext.access_token);
 
             Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(connection));
 
-            var invoice = await client.GetInvoice(connection[0].TenantId.ToString(), "ORC0999", authContext.access_token);
+
+            Console.WriteLine("**********************************************************************************************");
+            Console.WriteLine("*******************RETRIEVING INVOICE for ORC0999*****************************");
+
+            var invoice = await client.GetInvoice(connection.FirstOrDefault().TenantId.ToString(), "ORC0999", authContext.access_token);
             
-            Console.WriteLine(invoice._Invoices[0].AmountDue);
+            Console.WriteLine(invoice.AmountDue);
+
+            Console.WriteLine("**********************************************************************************************");
+            Console.WriteLine("*******************RETRIEVING ALL INVOICES*****************************");
+
+            var invoices = await client.GetInvoices(connection.FirstOrDefault().TenantId.ToString(),null, authContext.access_token);
+
+            invoices._Invoices.ForEach(inv =>
+            {
+                Console.WriteLine($"{inv.InvoiceID} - {inv.InvoiceNumber} - Amount Due: $ {inv.AmountDue}");
+            });
+
+            Console.WriteLine("**********************************************************************************************");
+            Console.WriteLine($"***Total Amount Due ${invoices._Invoices.Sum(a=> a.AmountDue)}***\n");
+            Console.WriteLine($"***Total Number of Invoices - {invoices._Invoices.Count()}***\n");
+            Console.WriteLine($"***Earliest Due Date - {invoices._Invoices.Min(a=> a.DueDate).Value.ToString("dd/MM/yyyy")}***\n");
+            Console.WriteLine("*******************PRESS ANY KEY TO CLOSE*****************************");
 
         }
     }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Xero.NetStandard.OAuth2.Api;
 using Xero.NetStandard.OAuth2.Model.Accounting;
 using Xero.NetStandard.OAuth2.Model.Identity;
+using System.Linq;
 
 namespace XeroInvoiceFinder.Common
 {
@@ -30,12 +31,15 @@ namespace XeroInvoiceFinder.Common
             string authorizationCode = System.Convert.ToBase64String(System.Text.ASCIIEncoding.UTF8.GetBytes(code));
 
             RestSharp.RestClient client = new RestSharp.RestClient("https://identity.xero.com/");
+
             var request = new RestSharp.RestRequest("/connect/token?", RestSharp.Method.POST);
+
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            //var jsonData = new { grant_type = "client_credentials", scope = "accounting.transactions" };
+
             request.AddObject(new { grant_type = "client_credentials", scope = "accounting.transactions" });
-            //var json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData);
+
             request.AddHeader("Authorization", $"Basic {authorizationCode}");
+
             var response = await client.ExecuteAsync<AuthResponse>(request);
 
 
@@ -71,7 +75,7 @@ namespace XeroInvoiceFinder.Common
             }
         }
 
-        public async Task<Invoices> GetInvoice(string xeroTenantId, string invoiceNo, string accessToken = null)
+        public async Task<Invoices> GetInvoices(string xeroTenantId, List<string> invoiceNos = null, string accessToken = null)
         {
             if (accessToken == null)
             {
@@ -85,8 +89,32 @@ namespace XeroInvoiceFinder.Common
 
             try
             {
-                var result = await apiInstance.GetInvoicesAsync(accessToken,xeroTenantId, invoiceNumbers: new List<string>() { invoiceNo });
+                var result = await apiInstance.GetInvoicesAsync(accessToken, xeroTenantId, invoiceNumbers: invoiceNos);
                 return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception when calling GetInvoice: " + e.Message);
+                return null;
+            }
+        }
+
+        public async Task<Invoice> GetInvoice(string xeroTenantId, string invoiceNo, string accessToken = null)
+        {
+            if (accessToken == null)
+            {
+                if (AuthContext == null)
+                {
+                    await Authenticate();
+                }
+                accessToken = AuthContext.access_token;
+            }
+            var apiInstance = new AccountingApi();
+
+            try
+            {
+                var result = await apiInstance.GetInvoicesAsync(accessToken, xeroTenantId, invoiceNumbers: new List<string>() { invoiceNo });
+                return result._Invoices.FirstOrDefault();
             }
             catch (Exception e)
             {
