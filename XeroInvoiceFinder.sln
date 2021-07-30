@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31410.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeroInvoiceFinder", "XeroInvoiceFinder\XeroInvoiceFinder.csproj", "{53D16EF4-DD82-4B26-A9DD-5916E926BF0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeroInvoiceFinder.Common", "XeroInvoiceFinder.Common\XeroInvoiceFinder.Common.csproj", "{D6FE3C31-361A-4123-B65A-32F3D4A2B7DE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53D16EF4-DD82-4B26-A9DD-5916E926BF0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53D16EF4-DD82-4B26-A9DD-5916E926BF0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53D16EF4-DD82-4B26-A9DD-5916E926BF0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53D16EF4-DD82-4B26-A9DD-5916E926BF0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6FE3C31-361A-4123-B65A-32F3D4A2B7DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6FE3C31-361A-4123-B65A-32F3D4A2B7DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6FE3C31-361A-4123-B65A-32F3D4A2B7DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6FE3C31-361A-4123-B65A-32F3D4A2B7DE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F4BD7921-5648-4084-AF33-34B94C8F2CC6}
+	EndGlobalSection
+EndGlobal
